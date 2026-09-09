@@ -6,4 +6,38 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+    --color-ink: #102a35;
+    --color-ink-soft: #49616c;
+    --color-ocean: #075d62;
+    --color-ocean-deep: #073b4c;
+    --color-mint: #dff3ed;
+    --color-canvas: #f5f8f7;
+}
+
+@layer base {
+    html { scroll-behavior: smooth; }
+    body { @apply bg-canvas text-ink antialiased; }
+    *:focus-visible { @apply outline-2 outline-offset-2 outline-teal-600; }
+}
+
+@layer components {
+    .site-shell { @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8; }
+    .page-content { @apply py-8 sm:py-12 lg:py-16; }
+    .eyebrow { @apply text-xs font-bold uppercase tracking-[0.16em] text-teal-700; }
+    .section-title { @apply mt-2 text-2xl font-bold tracking-tight text-ink sm:text-3xl; }
+    .body-copy { @apply leading-7 text-ink-soft; }
+    .surface-card { @apply rounded-2xl border border-slate-200/80 bg-white shadow-[0_8px_24px_rgba(16,42,53,0.06)]; }
+    .surface-card-interactive { @apply rounded-2xl border border-slate-200/80 bg-white shadow-[0_8px_24px_rgba(16,42,53,0.06)] transition duration-200 hover:-translate-y-0.5 hover:border-teal-200 hover:shadow-[0_16px_32px_rgba(16,42,53,0.10)]; }
+    .button-primary { @apply inline-flex min-h-11 items-center justify-center rounded-xl bg-ocean px-5 py-3 text-sm font-bold text-white shadow-sm transition duration-200 hover:bg-ocean-deep focus-visible:outline-teal-500 disabled:cursor-not-allowed disabled:opacity-60; }
+    .button-secondary { @apply inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-bold text-ink transition duration-200 hover:border-teal-300 hover:bg-teal-50; }
+    .button-on-dark { @apply inline-flex min-h-11 items-center justify-center rounded-xl bg-white px-5 py-3 text-sm font-bold text-ocean transition duration-200 hover:bg-teal-50; }
+    .button-quiet-on-dark { @apply inline-flex min-h-11 items-center justify-center rounded-xl border border-white/30 px-5 py-3 text-sm font-bold text-white transition duration-200 hover:border-white/60 hover:bg-white/10; }
+    .nav-link { @apply rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-teal-50 hover:text-ocean; }
+    .nav-link-active { @apply bg-teal-50 text-ocean; }
+    .form-label { @apply block text-sm font-bold text-ink; }
+    .form-input { @apply mt-2 block min-h-12 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 font-mono text-base text-ink shadow-sm transition placeholder:text-slate-400 hover:border-slate-400 focus:border-teal-600 focus:outline-none focus:ring-4 focus:ring-teal-100; }
+    .status-alert { @apply rounded-xl border px-4 py-4 text-sm leading-6; }
+    .status-alert-error { @apply border-rose-200 bg-rose-50 text-rose-900; }
+    .status-alert-warning { @apply border-amber-200 bg-amber-50 text-amber-900; }
+    .empty-state { @apply mx-auto max-w-xl rounded-2xl border border-slate-200/80 bg-white p-7 text-center shadow-[0_8px_24px_rgba(16,42,53,0.06)] sm:p-10; }
 }

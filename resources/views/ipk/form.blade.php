@@ -1,5 +1,22 @@
 @extends('layouts.app')
 
 @section('content')
-    <section class="mx-auto max-w-2xl rounded-[2rem] bg-white p-7 shadow-xl shadow-teal-950/10 ring-1 ring-slate-100 sm:p-10"><p class="text-sm font-bold uppercase tracking-widest text-teal-700">Academic portfolio</p><h1 class="mt-2 text-3xl font-black text-slate-900">Kalkulator IP</h1><p class="mt-3 leading-7 text-slate-600">Bandingkan dua nilai IP semester dalam hitungan detik.</p><form action="{{ route('ipk.form') }}" class="mt-8 grid gap-5 sm:grid-cols-2"><label class="font-semibold text-slate-700">IP Semester 1<input name="ip1" inputmode="decimal" required class="mt-2 w-full rounded-xl border-slate-200 bg-slate-50 px-4 py-3 font-mono text-lg outline-none ring-teal-500 transition focus:ring-2" placeholder="3.50"></label><label class="font-semibold text-slate-700">IP Semester 2<input name="ip2" inputmode="decimal" required class="mt-2 w-full rounded-xl border-slate-200 bg-slate-50 px-4 py-3 font-mono text-lg outline-none ring-teal-500 transition focus:ring-2" placeholder="3.50"></label><button class="sm:col-span-2 rounded-xl bg-gradient-to-r from-teal-700 to-cyan-700 px-5 py-3 font-bold text-white shadow-lg shadow-teal-900/20 transition hover:-translate-y-0.5 hover:shadow-xl">Hitung sekarang →</button></form></section>
+    <section class="surface-card mx-auto max-w-2xl p-6 sm:p-10">
+        <p class="eyebrow">Academic portfolio</p>
+        <h1 class="section-title text-3xl sm:text-4xl">Kalkulator IP</h1>
+        <p class="body-copy mt-3">Bandingkan dua nilai IP semester dalam hitungan detik.</p>
+
+        <form action="{{ route('ipk.form') }}" class="mt-8 grid gap-5 sm:grid-cols-2">
+            <label class="form-label">
+                IP Semester 1
+                <input name="ip1" inputmode="decimal" required class="form-input" placeholder="3.50" aria-describedby="ip-help">
+            </label>
+            <label class="form-label">
+                IP Semester 2
+                <input name="ip2" inputmode="decimal" required class="form-input" placeholder="3.50">
+            </label>
+            <p id="ip-help" class="text-sm leading-6 text-ink-soft sm:col-span-2">Gunakan angka desimal dengan titik, misalnya 3.50. Nilai maksimal adalah 4.00.</p>
+            <button class="button-primary sm:col-span-2" type="submit">Hitung sekarang <span class="ml-2" aria-hidden="true">→</span></button>
+        </form>
+    </section>
 @endsection

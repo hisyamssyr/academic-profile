@@ -1,9 +1,41 @@
 @extends('layouts.app')
 
 @section('content')
-    <section class="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#062f3d] via-[#075d62] to-[#0d8a86] px-6 py-16 text-white shadow-2xl sm:px-10 lg:px-16">
-        <div class="absolute -right-16 -top-20 h-72 w-72 rounded-full bg-teal-300/20 blur-3xl"></div>
-        <div class="relative max-w-3xl"><p class="text-sm font-bold uppercase tracking-[0.25em] text-teal-200">Institut Teknologi Sepuluh Nopember</p><h1 class="mt-5 text-4xl font-black leading-tight sm:text-6xl">Hello, I’m <span class="text-teal-200">Hisyam.</span></h1><p class="mt-6 max-w-2xl text-lg leading-8 text-teal-50/90">Mahasiswa Informatika ITS yang mengeksplorasi data, machine learning, dan pengalaman digital yang bermakna.</p><div class="mt-9 flex flex-wrap gap-3"><a href="{{ route('mahasiswa.detail', ['nrp' => $mahasiswa['nrp']]) }}" class="rounded-full bg-white px-6 py-3 font-bold text-[#075d62] transition hover:-translate-y-1 hover:shadow-lg">Explore my profile ↗</a><a href="{{ route('agent.show') }}" class="rounded-full border border-white/40 px-6 py-3 font-bold transition hover:bg-white/10">View DataAgent.ai</a></div></div>
+    <section class="relative overflow-hidden rounded-3xl bg-ocean-deep px-6 py-12 text-white sm:px-10 sm:py-16 lg:px-16 lg:py-20">
+        <div class="absolute -right-28 -top-28 size-80 rounded-full bg-teal-300/10 blur-3xl"></div>
+        <div class="absolute -bottom-24 left-1/3 size-64 rounded-full bg-cyan-300/10 blur-3xl"></div>
+        <div class="relative max-w-3xl">
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-teal-200">Institut Teknologi Sepuluh Nopember</p>
+            <h1 class="mt-5 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">Halo, saya <span class="text-teal-200">Hisyam.</span></h1>
+            <p class="mt-6 max-w-2xl text-base leading-8 text-slate-200 sm:text-lg">Mahasiswa Informatika ITS yang mengeksplorasi data, machine learning, dan pengalaman digital yang bermakna.</p>
+            <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+                <a href="{{ route('mahasiswa.detail', ['nrp' => $mahasiswa['nrp']]) }}" class="button-on-dark">Jelajahi profil <span class="ml-2" aria-hidden="true">→</span></a>
+                <a href="{{ route('agent.show') }}" class="button-quiet-on-dark">Lihat DataAgent.ai</a>
+            </div>
+        </div>
     </section>
-    <section class="mt-12 grid gap-6 lg:grid-cols-5"><a href="{{ route('mahasiswa.detail', ['nrp' => $mahasiswa['nrp']]) }}" class="group rounded-3xl bg-white p-7 shadow-lg shadow-slate-200/60 ring-1 ring-slate-100 transition duration-300 hover:-translate-y-2 hover:shadow-xl lg:col-span-3"><div class="flex items-start gap-5"><div class="grid h-20 w-20 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-700 text-3xl font-black text-white shadow-lg">HS</div><div><p class="text-xs font-bold uppercase tracking-widest text-teal-700">Academic profile</p><h2 class="mt-2 text-2xl font-black text-slate-900">{{ $mahasiswa['nama'] }}</h2><p class="mt-1 text-slate-500">{{ $mahasiswa['prodi'] }}</p></div></div><div class="mt-7 flex items-center justify-between border-t border-slate-100 pt-5"><span class="font-mono text-sm text-slate-500">{{ $mahasiswa['nrp'] }}</span><span class="font-bold text-teal-700 transition group-hover:translate-x-1">Full profile →</span></div></a><a href="{{ route('agent.show') }}" class="group rounded-3xl bg-slate-900 p-7 text-white shadow-lg transition duration-300 hover:-translate-y-2 hover:shadow-xl lg:col-span-2"><p class="text-xs font-bold uppercase tracking-widest text-cyan-300">Final project concept</p><h2 class="mt-3 text-3xl font-black">DataAgent<span class="text-teal-300">.ai</span></h2><p class="mt-3 leading-7 text-slate-300">Autonomous AI Agent Suite for end-to-end data analytics.</p><p class="mt-8 font-bold text-teal-300">Meet the agents →</p></a></section>
+
+    <section class="mt-10 grid gap-5 lg:grid-cols-5">
+        <a href="{{ route('mahasiswa.detail', ['nrp' => $mahasiswa['nrp']]) }}" class="surface-card-interactive group p-6 sm:p-7 lg:col-span-3">
+            <div class="flex items-start gap-4 sm:gap-5">
+                <div class="grid size-16 shrink-0 place-items-center rounded-2xl bg-mint text-xl font-bold text-ocean sm:size-20 sm:text-2xl">HS</div>
+                <div class="min-w-0">
+                    <p class="eyebrow">Profil akademis</p>
+                    <h2 class="mt-2 text-xl font-bold tracking-tight text-ink sm:text-2xl">{{ $mahasiswa['nama'] }}</h2>
+                    <p class="mt-2 text-sm leading-6 text-ink-soft sm:text-base">{{ $mahasiswa['prodi'] }}</p>
+                </div>
+            </div>
+            <div class="mt-6 flex items-center justify-between gap-4 border-t border-slate-100 pt-5">
+                <span class="font-mono text-xs text-slate-500 sm:text-sm">{{ $mahasiswa['nrp'] }}</span>
+                <span class="shrink-0 text-sm font-bold text-ocean transition group-hover:translate-x-1">Profil lengkap <span aria-hidden="true">→</span></span>
+            </div>
+        </a>
+
+        <a href="{{ route('agent.show') }}" class="surface-card-interactive group bg-ink p-6 text-white hover:border-ink sm:p-7 lg:col-span-2">
+            <p class="text-xs font-bold uppercase tracking-[0.16em] text-teal-200">Konsep proyek akhir</p>
+            <h2 class="mt-3 text-2xl font-bold tracking-tight">DataAgent<span class="text-teal-300">.ai</span></h2>
+            <p class="mt-3 leading-7 text-slate-300">Autonomous AI Agent Suite untuk analitik data end-to-end.</p>
+            <p class="mt-7 text-sm font-bold text-teal-200">Kenali para agent <span class="inline-block transition group-hover:translate-x-1" aria-hidden="true">→</span></p>
+        </a>
+    </section>
 @endsection
