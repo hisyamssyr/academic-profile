@@ -1,19 +1,57 @@
 <?php
 
-// Fallback environment variables for Vercel serverless deployment
-$_ENV['APP_ENV'] = $_ENV['APP_ENV'] ?? 'production';
-$_ENV['APP_DEBUG'] = $_ENV['APP_DEBUG'] ?? 'false';
-$_ENV['APP_KEY'] = $_ENV['APP_KEY'] ?? 'base64:LkTqyCKYcYonUHhfoy/qxQKe072nWgAFnTm86QxviK4=';
+use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
 
-// Direct temporary paths to /tmp since Vercel filesystem is read-only
-$_ENV['VIEW_COMPILED_PATH'] = $_ENV['VIEW_COMPILED_PATH'] ?? '/tmp';
-$_ENV['APP_CONFIG_CACHE'] = $_ENV['APP_CONFIG_CACHE'] ?? '/tmp/config.php';
-$_ENV['APP_EVENTS_CACHE'] = $_ENV['APP_EVENTS_CACHE'] ?? '/tmp/events.php';
-$_ENV['APP_PACKAGES_CACHE'] = $_ENV['APP_PACKAGES_CACHE'] ?? '/tmp/packages.php';
-$_ENV['APP_ROUTES_CACHE'] = $_ENV['APP_ROUTES_CACHE'] ?? '/tmp/routes.php';
-$_ENV['APP_SERVICES_CACHE'] = $_ENV['APP_SERVICES_CACHE'] ?? '/tmp/services.php';
-$_ENV['CACHE_STORE'] = $_ENV['CACHE_STORE'] ?? 'array';
-$_ENV['SESSION_DRIVER'] = $_ENV['SESSION_DRIVER'] ?? 'cookie';
-$_ENV['LOG_CHANNEL'] = $_ENV['LOG_CHANNEL'] ?? 'stderr';
+define('LARAVEL_START', microtime(true));
 
-require __DIR__.'/../public/index.php';
+// Setup Environment Variables for Vercel Serverless
+$envVars = [
+    'APP_ENV' => 'production',
+    'APP_DEBUG' => 'true',
+    'APP_KEY' => 'base64:LkTqyCKYcYonUHhfoy/qxQKe072nWgAFnTm86QxviK4=',
+    'VIEW_COMPILED_PATH' => '/tmp/framework/views',
+    'APP_CONFIG_CACHE' => '/tmp/config.php',
+    'APP_EVENTS_CACHE' => '/tmp/events.php',
+    'APP_PACKAGES_CACHE' => '/tmp/packages.php',
+    'APP_ROUTES_CACHE' => '/tmp/routes.php',
+    'APP_SERVICES_CACHE' => '/tmp/services.php',
+    'CACHE_STORE' => 'array',
+    'SESSION_DRIVER' => 'cookie',
+    'LOG_CHANNEL' => 'stderr',
+];
+
+foreach ($envVars as $key => $value) {
+    if (! getenv($key)) {
+        putenv("{$key}={$value}");
+        $_ENV[$key] = $value;
+        $_SERVER[$key] = $value;
+    }
+}
+
+// Create required framework directories in /tmp since Vercel root is read-only
+$dirs = [
+    '/tmp/framework',
+    '/tmp/framework/views',
+    '/tmp/framework/sessions',
+    '/tmp/framework/cache',
+];
+
+foreach ($dirs as $dir) {
+    if (! is_dir($dir)) {
+        @mkdir($dir, 0755, true);
+    }
+}
+
+// Register Composer Autoloader
+require __DIR__.'/../vendor/autoload.php';
+
+// Bootstrap Laravel Application
+/** @var Application $app */
+$app = require_once __DIR__.'/../bootstrap/app.php';
+
+// Set storage path to writable /tmp directory
+$app->useStoragePath('/tmp');
+
+// Handle incoming HTTP request
+$app->handleRequest(Request::capture());
