@@ -2,7 +2,6 @@
     "version": 2,
     "outputDirectory": "public",
     "installCommand": "",
-    "buildCommand": "composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --no-scripts --no-progress",
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "false",
