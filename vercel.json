@@ -5,7 +5,7 @@
     "buildCommand": "",
     "env": {
         "APP_ENV": "production",
-        "APP_DEBUG": "false",
+        "APP_DEBUG": "true",
         "APP_KEY": "base64:LkTqyCKYcYonUHhfoy/qxQKe072nWgAFnTm86QxviK4=",
         "VIEW_COMPILED_PATH": "/tmp",
         "CACHE_STORE": "array",
