@@ -10,7 +10,8 @@ Panduan ini khusus untuk **academic-profile** (Laravel tanpa database) menggunak
 2. Akun **Vercel** (login pakai akun GitHub cukup) — daftar di [vercel.com/signup](https://vercel.com/signup).
 3. Sudah ada di repo (yang sudah disiapkan):
    - `vercel.json` — fungsi PHP + routes + env (composer diurus otomatis oleh runtime).
-   - `api/index.php` — entry serverless; isinya membuat `/tmp`, menyuntik env (session cookie, cache array, `APP_KEY`), lalu memuat `vendor/autoload.php`.
+   - `api/index.php` — entry serverless; menyiapkan `/tmp`, melayani file statis dari `public/`, menyuntik env (session cookie, cache array, `APP_KEY`), lalu memuat `vendor/autoload.php`.
+   - `app/Providers/AppServiceProvider.php` — memaksa skema `https` ketika berjalan di Vercel (anti mixed content).
    - `public/build/` — hasil `npm run build` **harus ter-commit** (sudah tidak di-`.gitignore`). Ini yang membuat animasi/UI Vite tampil di live.
    - `composer.lock` ter-commit, agar install di Vercel deterministik.
 
@@ -22,6 +23,89 @@ Panduan ini khusus untuk **academic-profile** (Laravel tanpa database) menggunak
 - Semua request diteruskan ke `api/index.php` via route tunggal `/(.*)`. **File statis** di `public/build/`, `public/images/`, dan `public/favicon.ico` dilayani **langsung oleh fungsi** `api/index.php` — sebelum Laravel bootstrap — berdasarkan `REQUEST_URI`. Jika file ditemukan dan ekstensinya di-whitelist (`.css`, `.js`, `.woff2`, `.jpeg`, `.svg`, dll.), konten langsung dikirim dengan `Content-Type` yang benar dan caching yang agresif (`immutable` untuk `build/`). Jika tidak, request diteruskan ke Laravel. Konsep ini memastikan aset Vite tetap tersaji meskipun routing statis Vercel tidak aktif atau ambigu.
 - Nilai env (`APP_ENV`, `APP_DEBUG`, `APP_KEY`, dll.) sudah di-inline di `vercel.json` — **tidak perlu `.env`**.
 - **Skema HTTPS dipaksa** saat di Vercel (`AppServiceProvider::boot()` → `URL::forceScheme('https')`, diaktifkan oleh env `VERCEL`). Vercel memotong TLS, jadi function PHP melihat request sebagai HTTP dan `@vite`/`asset()` akan menghasilkan URL `http://` absolut — browser memblokir ini sebagai **mixed content** (halaman polos + gambar rusak). Paksaan skema ini mencegah hal tersebut.
+
+---
+
+## Konfigurasi yang dilakukan
+
+Ringkasan lengkap semua perubahan yang dipakai untuk menghosting proyek Laravel ini di Vercel (serverless PHP).
+
+### 1. `vercel.json`
+
+```json
+{
+    "version": 2,
+    "outputDirectory": "public",
+    "installCommand": "",
+    "buildCommand": "",
+    "env": {
+        "APP_ENV": "production",
+        "APP_DEBUG": "false",
+        "APP_KEY": "base64:...",
+        "APP_MAINTENANCE_DRIVER": "file",
+        "VIEW_COMPILED_PATH": "/tmp",
+        "CACHE_STORE": "array",
+        "SESSION_DRIVER": "cookie",
+        "LOG_CHANNEL": "stderr"
+    },
+    "functions": {
+        "api/index.php": {
+            "runtime": "vercel-php@0.9.0"
+        }
+    },
+    "routes": [
+        { "src": "/(.*)", "dest": "/api/index.php" }
+    ]
+}
+```
+
+Per-key:
+
+| Kunci | Nilai | Kenapa |
+| --- | --- | --- |
+| `version` | `2` | Format legacy routing (`functions` + `routes`). |
+| `outputDirectory` | `"public"` | Menjadikan isi folder `public/` sebagai output statis; aset Vite di `public/build/` dan `public/images/` punya URL alami (`/build/...`, `/images/...`). |
+| `installCommand` | `""` | Menonaktifkan install Node otomatis (`npm install`) — proyek ini tidak butuh node di build. |
+| `buildCommand` | `""` | Menonaktifkan build framework (`npm run build`). Vite sudah di-build lokal dan hasilnya ter-commit. Menghindari error `vite: command not found` / `composer: command not found`. |
+| `env` | — | Nilai yang normalnya di `.env` di-inline di sini; Vercel mengeksposnya sebagai environment saat runtime. **Jangan** set `APP_DEBUG=true`. |
+| `functions.api/index.php.runtime` | `"vercel-php@0.9.0"` | Satu-satunya function (PHP 8.5.x). Runtime ini otomatis menjalankan `composer install --no-dev --no-scripts --ignore-platform-reqs` saat `composer.json` ada. |
+| `routes` | `/(.*)` → `/api/index.php` | Semua request masuk ke fungsi; fungsi yang memutuskan statis vs Laravel (lihat `api/index.php`). Tidak ada route terpisah untuk aset. |
+
+### 2. `api/index.php` (entry serverless)
+
+Urutan kerja fungsi:
+
+1. **Siapkan direktori tulis** di `/tmp` (`storage`, `framework/views`, `cache`, `session`, dll.) — filesystem lambda read-only selain `/tmp`.
+2. **Copy database SQLite** ke `/tmp/database.sqlite` (SQLite butuh akses tulis untuk WAL/journal) dan set `DB_DATABASE` ke sana.
+3. **Serve file statis langsung** — urutan terpenting. Resolve `REQUEST_URI` ke path di `public/`; jika file ada **dan** ekstensinya di-whitelist (`.css`, `.js`, `.mjs`, `.json`, `.map`, `.svg`, `.png`, `.jpg`, `.jpeg`, `.webp`, `.gif`, `.avif`, `.ico`, `.woff`, `.woff2`, `.ttf`, `.otf`, `.txt`, `.xml`), kirim konten + `Content-Type` yang benar + `Cache-Control` (`immutable` untuk `/build/`), lalu `exit`. Guard `realpath` mencegah path traversal; file `.php` tidak ikut diserve. Ini menjamin CSS/JS Vite & gambar selalu tersaji walau routing statis Vercel tidak aktif.
+4. **Suntik env** (hanya kalau belum ada): `APP_DEBUG=false`, `APP_MAINTENANCE_DRIVER=file`, `DB_CONNECTION=sqlite`, `CACHE_STORE=array`, `SESSION_DRIVER=cookie`, `LOG_CHANNEL=stderr`, cache paths ke `/tmp`, dst.
+5. **Load `vendor/autoload.php`**, bootstrap `bootstrap/app.php`, `useStoragePath('/tmp')`, lalu `handleRequest(...)`. Catch `Throwable` → 500 dengan halaman error berisi pesan (berguna saat debugging).
+
+> **Trap penting** `APP_MAINTENANCE_DRIVER`: jika berisi string kosong (mis. dari dashboard), `Manager::createDriver('')` memicu rekursi/`ArgumentCountError`. Handler ini **memaksa `file`** sehingga aman.
+
+### 3. `app/Providers/AppServiceProvider.php`
+
+```php
+public function boot(): void
+{
+    if (($_SERVER['VERCEL'] ?? $_ENV['VERCEL'] ?? getenv('VERCEL')) !== false) {
+        URL::forceScheme('https');
+    }
+}
+```
+
+Vercel memotong TLS, jadi function PHP melihat request sebagai `http://`. Tanpa force ini, `@vite()`/`asset()`/`url()` menghasilkan URL `http://...` absolut — browser memblokirnya sebagai **mixed content** di halaman `https://` (gejala: halaman polos + ikon gambar rusak, padahal status 200). `getenv('VERCEL')` hanya benar di environment Vercel, jadi preview lokal tetap `http://` normal.
+
+### 4. Build aset Vite (`public/build`) di-commit
+
+- `.gitignore` TIDAK lagi mengecualikan `public/build/` — hasil `npm run build` (**`public/build/`** berisi `manifest.json` + `assets/*.css|js|woff2`) di-commit ke repo.
+- Runtime tidak menjalankan build apa pun; file inilah yang di-upload sebagai aset.
+- `resources/views/layouts/app.blade.php` memakai `@vite(...)` ketika `public_path('build/manifest.json')` ada, dan jatuh ke fallback CDN Tailwind + CSS inline jika tidak.
+
+### 5. Tidak perlu `.env` & `vendor`
+
+- `.env` di-`.gitignore`; nilai diganti oleh `vercel.json` env + `api/index.php`.
+- `vendor/` di-`.gitignore`; dihasilkan otomatis oleh runtime saat build deployment.
 
 ---
 
@@ -51,19 +135,19 @@ git push
 ### 3. Verifikasi
 
 - Status build tampil di halaman dashboard; tunggu sampai **Ready**.
-- URL live otomatis: `https://academic-profile.vercel.app`.
+- URL live otomatis: `https://hisyam-academic-profile.vercel.app` (nama proyek Vercel = `hisyam-academic-profile`).
 - Cek di browser: `/`, `/mahasiswa/5025241130`, `/agent`, `/hitung-ipk` harus tampil normal **dengan animasi** (ripple, tilt, navbar hamburger, dll.) — kalau animasi mati, berarti `public/build` belum ter-commit.
 - Quick check terminal:
 
   ```bash
-  curl -s -o /dev/null -w "%{http_code}\n" https://academic-profile.vercel.app
+  curl -s -o /dev/null -w "%{http_code}\n" https://hisyam-academic-profile.vercel.app
   ```
 
   Harusnya `200`. Logika route juga menangani `404` untuk path yang tidak ada.
 
 ### 4. (Opsional) Tentukan domain
 
-- Dashboard proyek → **Settings → Domains** → tambah `academic-profile.vercel.app` atau domain sendiri (HTTPS otomatis).
+- Dashboard proyek → **Settings → Domains** → tambah `hisyam-academic-profile.vercel.app` atau domain sendiri (HTTPS otomatis).
 
 ---
 
@@ -126,7 +210,8 @@ CLI membaca `vercel.json` yang sama; hasilnya identik dengan deploy dari GitHub,
 ## Referensi file terkait
 
 - `vercel.json` — konfigurasi runtime, env, dan routes.
-- `api/index.php` — bootstrap serverless Laravel (membuat `/tmp`, env inline, `APP_KEY`).
+- `api/index.php` — bootstrap serverless Laravel (membuat `/tmp`, serve statis, env inline, `APP_KEY`).
+- `app/Providers/AppServiceProvider.php` — `URL::forceScheme('https')` saat di Vercel.
 - `public/build/` — aset Vite **wajib ter-commit**; `manifest.json` dipakai `@vite` di `resources/views/layouts` untuk memuat CSS/JS hasil build.
 - `.gitignore` — `vendor/` & `.env` tidak ter-commit (sengaja); `public/build` **tidak** lagi dikecualikan.
 - Panduan alternatif lain: `docs/hosting-render.md` (via Docker/Render).
