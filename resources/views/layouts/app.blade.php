@@ -46,6 +46,13 @@
                 .empty-state { max-width: 36rem; margin-inline: auto; border-radius: 1rem; padding: 1.75rem; text-align: center; background: var(--surface); border: 1px solid var(--line-strong); box-shadow: var(--shadow-card); }
                 .bg-ocean { background-color: var(--ocean); } .bg-ocean-deep { background-color: var(--ocean-deep); } .bg-ocean-strong { background-color: var(--ocean-strong); }
                 .text-ink { color: var(--ink); } .text-ink-soft { color: var(--ink-soft); } .text-ocean { color: var(--ocean); } .text-ocean-deep { color: var(--ocean-deep-strong); } .text-ocean-soft { color: var(--ocean-soft); } .border-line { border-color: var(--line-strong); }
+                .nav-link { position: relative; }
+                .nav-link::after { content: ""; position: absolute; left: .875rem; right: .875rem; bottom: .5rem; height: 2px; border-radius: 2px; background: var(--ocean-soft); transform: scaleX(0); transform-origin: left; transition: transform .25s cubic-bezier(0.22,1,0.36,1); }
+                .nav-link:hover::after { transform: scaleX(1); }
+                .button-primary { position: relative; overflow: hidden; }
+                .button-primary::after { content: ""; position: absolute; top: 0; height: 100%; width: 36%; background: linear-gradient(90deg, transparent, rgb(255 255 255 / .3), transparent); transform: translateX(-220%) skewX(-20deg); pointer-events: none; }
+                .button-primary:hover::after { animation: btn-shine .9s ease; }
+                @keyframes btn-shine { to { transform: translateX(320%) skewX(-20deg); } }
                 @media (min-width: 640px) { .site-shell { padding-inline: 1.5rem; } .page-content { padding-block: 3.5rem; } .section-title { font-size: 1.875rem; } .empty-state { padding: 2.5rem; } }
                 @media (min-width: 1024px) { .site-shell { padding-inline: 2rem; } .page-content { padding-block: 5rem; } }
             </style>
@@ -57,30 +64,33 @@
             <nav class="site-shell" aria-label="Navigasi utama">
                 <div class="flex min-h-16 items-center justify-between gap-4 md:min-h-18">
                     <a href="{{ route('home') }}" class="flex items-center gap-2.5 rounded-lg transition hover:opacity-90" aria-label="HS Portfolio, beranda">
-                        <span class="grid size-9 place-items-center rounded-xl bg-gradient-to-br from-ocean to-ocean-deep text-sm font-bold text-white shadow-sm">HS</span>
+                        <span class="grid size-9 place-items-center rounded-xl bg-gradient-to-br from-ocean to-ocean-deep text-sm font-bold text-white shadow-sm transition-transform duration-300 hover:scale-105">HS</span>
                         <span class="text-[15px] font-bold tracking-tight text-ink">Hisyam Raditya</span>
                     </a>
 
-                    <div class="hidden items-center gap-1 md:flex">
-                        <a href="{{ route('home') }}" @class(['nav-link', 'nav-link-active' => request()->routeIs('home')])>Beranda</a>
-                        <a href="{{ route('mahasiswa.detail', ['nrp' => '5025241130']) }}" @class(['nav-link', 'nav-link-active' => request()->routeIs('mahasiswa.*')])>Profil</a>
-                        <a href="{{ route('agent.show') }}" @class(['nav-link', 'nav-link-active' => request()->routeIs('agent.*')])>DataAgent.ai</a>
-                        <span class="mx-1.5 block h-5 w-px bg-line" aria-hidden="true"></span>
-                        <a href="{{ route('ipk.form') }}" @class(['button-primary !min-h-10 !px-4', 'bg-ocean-strong' => request()->routeIs('ipk.*')])>
-                            <svg aria-hidden="true" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6.3l-4.6 7.4a2 2 0 0 0 1.7 3.1h9.8a2 2 0 0 0 1.7-3.1L14 9.3V3" /><path d="M9 15h6" /></svg>
-                            Kalkulator IP
-                        </a>
-                    </div>
-
                     <div class="flex items-center gap-2">
-                        <a href="{{ route('ipk.form') }}" class="button-primary !min-h-10 !px-4 text-sm md:hidden">
-                            <span class="sr-only">Kalkulator IP</span>
-                            <svg aria-hidden="true" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6.3l-4.6 7.4a2 2 0 0 0 1.7 3.1h9.8a2 2 0 0 0 1.7-3.1L14 9.3V3" /><path d="M9 15h6" /></svg>
-                        </a>
-                        <button type="button" data-menu-button aria-controls="mobile-menu" aria-expanded="false" class="inline-flex size-10 items-center justify-center rounded-xl border border-line bg-surface text-ink transition hover:bg-surface-strong md:hidden">
+                        <nav class="hidden items-center gap-1 md:flex" aria-label="Menu utama">
+                            <a href="{{ route('home') }}" @class(['nav-link', 'nav-link-active' => request()->routeIs('home')])>Beranda</a>
+                            <a href="{{ route('mahasiswa.detail', ['nrp' => '5025241130']) }}" @class(['nav-link', 'nav-link-active' => request()->routeIs('mahasiswa.*')])>Profil</a>
+                            <a href="{{ route('agent.show') }}" @class(['nav-link', 'nav-link-active' => request()->routeIs('agent.*')])>DataAgent.ai</a>
+                            <span class="mx-1.5 block h-5 w-px bg-line" aria-hidden="true"></span>
+                            <a href="{{ route('ipk.form') }}" @class(['button-primary !min-h-10 !px-4', 'bg-ocean-strong' => request()->routeIs('ipk.*')])>
+                                <svg aria-hidden="true" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6.3l-4.6 7.4a2 2 0 0 0 1.7 3.1h9.8a2 2 0 0 0 1.7-3.1L14 9.3V3" /><path d="M9 15h6" /></svg>
+                                Kalkulator IP
+                            </a>
+                        </nav>
+
+                        <div class="flex items-center gap-2 md:hidden">
+                            <a href="{{ route('ipk.form') }}" class="button-primary !min-h-10 !px-4 text-sm">
+                                <span class="sr-only">Kalkulator IP</span>
+                                <svg aria-hidden="true" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6.3l-4.6 7.4a2 2 0 0 0 1.7 3.1h9.8a2 2 0 0 0 1.7-3.1L14 9.3V3" /><path d="M9 15h6" /></svg>
+                            </a>
+                            <button type="button" data-menu-button aria-controls="mobile-menu" aria-expanded="false" class="inline-flex size-10 items-center justify-center rounded-xl border border-line bg-surface text-ink transition hover:bg-surface-strong active:scale-95 md:hidden">
                             <span class="sr-only">Buka menu navigasi</span>
-                            <svg aria-hidden="true" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+                            <svg data-menu-open aria-hidden="true" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+                            <svg data-menu-close hidden aria-hidden="true" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 6 12 12" /><path d="m18 6-12 12" /></svg>
                         </button>
+                        </div>
                     </div>
                 </div>
 
@@ -94,19 +104,6 @@
                 </div>
             </nav>
         </header>
-
-        <script>
-            (function () {
-                var menuButton = document.querySelector('[data-menu-button]');
-                var menu = document.querySelector('[data-mobile-menu]');
-                if (!menuButton || !menu) { return; }
-                menuButton.addEventListener('click', function () {
-                    var expanded = menuButton.getAttribute('aria-expanded') === 'true';
-                    menuButton.setAttribute('aria-expanded', String(!expanded));
-                    menu.toggleAttribute('hidden');
-                });
-            })();
-        </script>
 
         <main class="site-shell page-content flex-1">
             @yield('content')

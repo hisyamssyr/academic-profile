@@ -1,7 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-    <a href="{{ route('ipk.form') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-ocean transition hover:text-ocean-deep"><span aria-hidden="true">←</span> Ubah nilai IP</a>
+    <a href="{{ route('ipk.form') }}" class="group inline-flex items-center gap-2 text-sm font-semibold text-ocean transition hover:text-ocean-strong">
+        <span aria-hidden="true" class="grid size-7 place-items-center rounded-full border border-ocean-soft/30 bg-ocean/15 text-ocean-soft transition-all duration-300 group-hover:-translate-x-0.5 group-hover:border-ocean group-hover:bg-ocean group-hover:text-white">
+            <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5" /><path d="m12 19-7-7 7-7" /></svg>
+        </span>
+        Ubah nilai IP
+    </a>
 
     <section class="surface-card mt-5 p-6 sm:p-8">
         <header>

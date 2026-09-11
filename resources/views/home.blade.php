@@ -7,13 +7,13 @@
         <div class="relative grid items-center gap-12 lg:grid-cols-12 lg:gap-10">
             <div class="lg:col-span-7">
                 <p class="inline-flex items-center gap-2 rounded-full border border-ocean-strong/50 bg-ocean/10 px-3.5 py-1.5 text-xs font-semibold text-ocean-soft" data-reveal="0">
-                    <span class="size-1.5 rounded-full bg-ocean-soft" aria-hidden="true"></span>
+                    <span class="relative flex size-1.5 rounded-full bg-ocean-soft" aria-hidden="true"><span class="absolute inset-0 animate-ping rounded-full bg-ocean-soft/70"></span></span>
                     Institut Teknologi Sepuluh Nopember
                 </p>
 
                 <h1 class="mt-5 text-4xl font-bold leading-[1.05] tracking-tight text-ink sm:text-5xl lg:text-6xl">
                     Halo, saya
-                    <span class="text-ocean-soft">Hisyam.</span>
+                    <span class="bg-gradient-to-r from-ocean-soft via-ocean to-ocean-deep-strong bg-clip-text text-transparent">Hisyam.</span>
                 </h1>
 
                 <p class="mt-5 max-w-xl text-lg leading-8 text-ink-soft">
@@ -21,11 +21,18 @@
                 </p>
 
                 <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-                    <a href="{{ route('mahasiswa.detail', ['nrp' => $mahasiswa['nrp']]) }}" class="button-primary">
+                    <a href="{{ route('mahasiswa.detail', ['nrp' => $mahasiswa['nrp']]) }}" class="button-primary group">
                         Jelajahi profil
-                        <span aria-hidden="true">→</span>
+                        <span aria-hidden="true" class="grid size-7 place-items-center rounded-full border border-white/30 bg-white/10 text-white transition-all duration-300 group-hover:translate-x-0.5 group-hover:border-white/50 group-hover:bg-white/20">
+                            <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                        </span>
                     </a>
-                    <a href="{{ route('agent.show') }}" class="button-secondary">Lihat DataAgent.ai</a>
+                    <a href="{{ route('agent.show') }}" class="button-secondary group">
+                        Lihat DataAgent.ai
+                        <span aria-hidden="true" class="grid size-6 place-items-center rounded-full border border-ocean-soft/40 bg-ocean/15 text-ocean-soft transition-all duration-300 group-hover:translate-x-0.5 group-hover:border-ocean group-hover:bg-ocean group-hover:text-white">
+                            <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                        </span>
+                    </a>
                 </div>
 
                 <dl class="mt-10 grid max-w-md grid-cols-3 gap-x-8 gap-y-5 border-t border-line pt-6" data-reveal-group>
@@ -46,12 +53,12 @@
 
             <div class="lg:col-span-5">
                 <div class="relative mx-auto max-w-xs sm:max-w-sm lg:max-w-none">
-                    <div class="absolute -inset-5 rounded-[2rem] bg-gradient-to-br from-ocean-deep/60 via-ocean/20 to-ocean-deep-strong/25 blur-2xl" aria-hidden="true"></div>
-                    <div class="relative overflow-hidden rounded-[1.75rem] border border-line-strong bg-surface p-3 shadow-card-hover">
+                    <div class="absolute -inset-5 animate-float-slow rounded-[2rem] bg-gradient-to-br from-ocean-deep/60 via-ocean/20 to-ocean-deep-strong/25 blur-2xl" aria-hidden="true"></div>
+                    <div class="relative animate-float overflow-hidden rounded-[1.75rem] border border-line-strong bg-surface p-3 shadow-card-hover">
                         <img src="{{ asset('images/pict.jpeg') }}" alt="Foto Hisyam Syafa Raditya" class="aspect-[4/5] w-full rounded-3xl object-cover" loading="lazy">
                         <span class="pointer-events-none absolute inset-3 rounded-3xl ring-1 ring-inset ring-line-strong" aria-hidden="true"></span>
                     </div>
-                    <div class="absolute -bottom-5 -left-4 rounded-2xl border border-line bg-surface px-4 py-3 shadow-card sm:-left-8">
+                    <div class="absolute -bottom-5 -left-4 animate-float rounded-2xl border border-line bg-surface px-4 py-3 shadow-card [animation-delay:1.2s] sm:-left-8">
                         <p class="text-xs font-semibold text-ink-soft">Fokus terkini</p>
                         <p class="mt-0.5 text-sm font-bold text-ink">Data &amp; Machine Learning</p>
                     </div>
@@ -74,7 +81,12 @@
             </div>
             <div class="mt-auto flex items-center justify-between gap-4 border-t border-line pt-5">
                 <span class="font-mono text-xs text-ink-faint">{{ $mahasiswa['nrp'] }}</span>
-                <span class="shrink-0 text-sm font-semibold text-ocean">Buka profil <span class="inline-block transition group-hover:translate-x-1" aria-hidden="true">→</span></span>
+                <span class="inline-flex items-center gap-2 text-sm font-semibold text-ocean">
+                    Buka profil
+                    <span aria-hidden="true" class="grid size-7 place-items-center rounded-full border border-ocean-soft/30 bg-ocean/15 text-ocean-soft transition-all duration-300 group-hover:translate-x-0.5 group-hover:border-ocean group-hover:bg-ocean group-hover:text-white">
+                        <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                    </span>
+                </span>
             </div>
         </a>
 
@@ -85,7 +97,12 @@
             <p class="mt-5 text-xs font-semibold uppercase tracking-[0.16em] text-ocean-soft">Konsep proyek akhir</p>
             <h2 class="mt-2 text-2xl font-bold tracking-tight">DataAgent<span class="text-ocean-soft">.ai</span></h2>
             <p class="mt-2 max-w-md text-sm leading-6 text-ink-soft">Autonomous AI Agent Suite untuk analitik data end-to-end.</p>
-            <p class="mt-auto pt-6 text-sm font-semibold text-ocean-soft">Kenali para agent <span class="inline-block transition group-hover:translate-x-1" aria-hidden="true">→</span></p>
+            <p class="mt-auto inline-flex items-center gap-2 pt-6 text-sm font-semibold text-ocean-soft">
+                    Kenali para agent
+                    <span aria-hidden="true" class="grid size-7 place-items-center rounded-full border border-ocean-soft/40 bg-white/10 text-ocean-soft transition-all duration-300 group-hover:translate-x-0.5 group-hover:border-ocean-soft group-hover:bg-ocean group-hover:text-white">
+                        <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                    </span>
+                </p>
         </a>
     </section>
 @endsection

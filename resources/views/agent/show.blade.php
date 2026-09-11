@@ -2,7 +2,12 @@
 
 @section('content')
     @if (isset($agent))
-        <a href="{{ route('agent.show') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-ocean transition hover:text-ocean-deep"><span aria-hidden="true">←</span> Semua agent</a>
+        <a href="{{ route('agent.show') }}" class="group inline-flex items-center gap-2 text-sm font-semibold text-ocean transition hover:text-ocean-strong">
+            <span aria-hidden="true" class="grid size-7 place-items-center rounded-full border border-ocean-soft/30 bg-ocean/15 text-ocean-soft transition-all duration-300 group-hover:-translate-x-0.5 group-hover:border-ocean group-hover:bg-ocean group-hover:text-white">
+                <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5" /><path d="m12 19-7-7 7-7" /></svg>
+            </span>
+            Semua agent
+        </a>
 
         <section class="surface-card mt-5 overflow-hidden">
             <div class="h-2 bg-gradient-to-r from-ocean-deep via-ocean to-ocean-deep-strong" aria-hidden="true"></div>
@@ -53,9 +58,11 @@
                         <p class="mt-5 font-mono text-xs font-semibold text-ocean-soft">{{ $item['nama'] }}</p>
                         <h3 class="mt-1 text-lg font-bold tracking-tight text-ink">{{ $item['peran'] }}</h3>
                         <p class="mt-2 text-sm leading-6 text-ink-soft">{{ $item['fungsi'] }}</p>
-                        <span class="mt-auto flex items-center gap-1.5 pt-6 text-sm font-semibold text-ocean">
+                        <span class="mt-auto inline-flex items-center gap-2 pt-6 text-sm font-semibold text-ocean">
                             Pelajari agent
-                            <span class="inline-block transition group-hover:translate-x-1" aria-hidden="true">→</span>
+                            <span aria-hidden="true" class="grid size-7 place-items-center rounded-full border border-ocean-soft/30 bg-ocean/15 text-ocean-soft transition-all duration-300 group-hover:translate-x-0.5 group-hover:border-ocean group-hover:bg-ocean group-hover:text-white">
+                                <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                            </span>
                         </span>
                     </a>
                 @endforeach

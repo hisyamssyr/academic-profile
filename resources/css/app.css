@@ -25,6 +25,14 @@
     --shadow-card: 0 1px 2px rgb(0 0 0 / .28), 0 14px 30px rgb(0 0 0 / .34);
     --shadow-card-hover: 0 2px 4px rgb(0 0 0 / .3), 0 22px 44px rgb(0 0 0 / .42);
     --shadow-glow: 0 0 0 1px rgb(96 165 250 / .35), 0 0 18px rgb(59 130 246 / .18);
+
+    --animate-float: float 7s ease-in-out infinite;
+    --animate-float-slow: float 11s ease-in-out infinite;
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-12px); }
+    }
 }
 
 @layer base {
@@ -49,13 +57,27 @@
     .surface-card { @apply rounded-2xl border border-line bg-surface text-ink shadow-card; }
     .surface-card-interactive { @apply rounded-2xl border border-line bg-surface text-ink shadow-card transition duration-300 hover:border-line-strong hover:bg-surface-strong hover:shadow-card-hover; }
 
-    .button-primary { @apply inline-flex min-h-10.5 items-center justify-center gap-2 rounded-xl bg-ocean px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-ocean-strong active:translate-y-px; }
-    .button-secondary { @apply inline-flex min-h-10.5 items-center justify-center gap-2 rounded-xl border border-line bg-surface px-5 text-sm font-semibold text-ink transition hover:border-ocean-soft/60 hover:text-white active:translate-y-px; }
-    .button-on-dark { @apply inline-flex min-h-10.5 items-center justify-center gap-2 rounded-xl bg-white px-5 text-sm font-semibold text-ocean-deep shadow-sm transition hover:bg-slate-100 active:translate-y-px; }
-    .button-quiet-on-dark { @apply inline-flex min-h-10.5 items-center justify-center gap-2 rounded-xl border border-white/20 px-5 text-sm font-semibold text-white transition hover:border-white/50 hover:bg-white/10 active:translate-y-px; }
-    .button-danger { @apply inline-flex min-h-10.5 items-center justify-center gap-2 rounded-xl bg-rose-500 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600 active:translate-y-px; }
+    .button-primary { @apply inline-flex min-h-10.5 items-center justify-center gap-2 rounded-xl bg-ocean px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-ocean-strong active:translate-y-px relative overflow-hidden; }
+    .button-secondary { @apply inline-flex min-h-10.5 items-center justify-center gap-2 rounded-xl border border-line bg-surface px-5 text-sm font-semibold text-ink transition hover:border-ocean-soft/60 hover:text-white active:translate-y-px relative overflow-hidden; }
+    .button-on-dark { @apply inline-flex min-h-10.5 items-center justify-center gap-2 rounded-xl bg-white px-5 text-sm font-semibold text-ocean-deep shadow-sm transition hover:bg-slate-100 active:translate-y-px relative overflow-hidden; }
+    .button-quiet-on-dark { @apply inline-flex min-h-10.5 items-center justify-center gap-2 rounded-xl border border-white/20 px-5 text-sm font-semibold text-white transition hover:border-white/50 hover:bg-white/10 active:translate-y-px relative overflow-hidden; }
+    .button-danger { @apply inline-flex min-h-10.5 items-center justify-center gap-2 rounded-xl bg-rose-500 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600 active:translate-y-px relative overflow-hidden; }
 
-    .nav-link { @apply rounded-lg px-3.5 py-2 text-sm font-semibold text-ink-soft transition hover:bg-white/6 hover:text-white; }
+    .nav-link { @apply relative rounded-lg px-3.5 py-2 text-sm font-semibold text-ink-soft transition hover:bg-white/6 hover:text-white; }
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        left: .875rem;
+        right: .875rem;
+        bottom: .375rem;
+        height: 2px;
+        border-radius: 2px;
+        background: var(--color-ocean-soft);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform .25s cubic-bezier(.22, 1, .36, 1);
+    }
+    .nav-link:hover::after { transform: scaleX(1); }
     .nav-link-active { @apply bg-ocean/15 text-ocean-soft; }
     .nav-link-mobile { @apply rounded-lg px-3.5 py-2.5 text-base font-semibold text-ink-soft transition hover:bg-white/6 hover:text-white; }
     .nav-link-mobile-active { @apply bg-ocean/15 text-ocean-soft; }
@@ -81,13 +103,15 @@
 
 .js-enabled [data-reveal] {
     opacity: 0;
-    transform: translateY(24px);
-    transition: opacity .7s cubic-bezier(.22, 1, .36, 1), transform .7s cubic-bezier(.22, 1, .36, 1);
-    will-change: opacity, transform;
+    transform: translateY(26px) scale(.985);
+    filter: blur(5px);
+    transition: opacity .8s cubic-bezier(.22, 1, .36, 1), transform .8s cubic-bezier(.22, 1, .36, 1), filter .8s cubic-bezier(.22, 1, .36, 1);
+    will-change: opacity, transform, filter;
 }
 .js-enabled [data-reveal].is-revealed {
     opacity: 1;
     transform: none;
+    filter: blur(0);
 }
 
 .js-enabled .site-shell,
@@ -98,15 +122,59 @@
 .js-enabled .surface-card,
 .js-enabled .surface-card-interactive,
 .js-enabled .prime-card,
-.js-enabled aside { transition-property: opacity, transform, background-color, border-color, box-shadow; }
+.js-enabled aside { transition-property: opacity, transform, background-color, border-color, box-shadow, filter; }
+
+/* ---------- Micro-interaksi tombol: kilau + ripple ---------- */
+
+.button-primary::after,
+.button-on-dark::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 36%;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / .3), transparent);
+    transform: translateX(-220%) skewX(-20deg);
+    pointer-events: none;
+}
+.button-primary:hover::after,
+.button-on-dark:hover::after { animation: btn-shine .9s ease; }
+@keyframes btn-shine { to { transform: translateX(320%) skewX(-20deg); } }
+
+.ripple {
+    position: absolute;
+    border-radius: 9999px;
+    background: rgb(255 255 255 / .28);
+    transform: scale(0);
+    animation: ripple-grow .7s ease-out forwards;
+    pointer-events: none;
+}
+@keyframes ripple-grow { to { transform: scale(1); opacity: 0; } }
+
+/* ---------- Kartu interaktif: ilusi 3D saat hover ---------- */
+
+.surface-card-interactive { transform-style: preserve-3d; will-change: transform; }
 
 @media (prefers-reduced-motion: reduce) {
-    .js-enabled [data-reveal] { opacity: 1; transform: none; transition: none; }
+    .js-enabled [data-reveal] { opacity: 1; transform: none; filter: none; transition: none; }
     html { scroll-behavior: auto; }
+    .animate-float, .animate-float-slow { animation: none; }
 }
 
 [data-scroll-progress] { transform-origin: left; will-change: transform; }
 
 [data-scroll-top] { opacity: 0; transition: opacity .3s; }
 [data-scroll-top]:not([hidden]) { opacity: 1; }
+
+[data-menu-open]:not([hidden]),
+[data-menu-close]:not([hidden]) { animation: menu-icon-in .22s cubic-bezier(.22, 1, .36, 1); }
+@keyframes menu-icon-in {
+    from { transform: rotate(-90deg) scale(.6); opacity: 0; }
+    to { transform: none; opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    [data-menu-open]:not([hidden]),
+    [data-menu-close]:not([hidden]) { animation: none; }
+}
 

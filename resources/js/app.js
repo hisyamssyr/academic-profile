@@ -12,6 +12,8 @@
 (function () {
     'use strict';
 
+    document.documentElement.classList.add('js-enabled');
+
     var reducedMotion = false;
     if (window.matchMedia) {
         reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -159,5 +161,47 @@
             window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
         });
         checkTop();
+    }
+
+    /* ---------- 6. Ripple saat tombol diklik ---------- */
+
+    var rippleSelector = '.button-primary, .button-secondary, .button-on-dark, .button-quiet-on-dark, .button-danger';
+    document.addEventListener('click', function (e) {
+        if (reducedMotion) { return; }
+        var btn = e.target.closest(rippleSelector);
+        if (!btn) { return; }
+        var rect = btn.getBoundingClientRect();
+        var d = Math.max(rect.width, rect.height);
+        var ripple = document.createElement('span');
+        ripple.className = 'ripple';
+        ripple.style.width = ripple.style.height = d + 'px';
+        ripple.style.left = (e.clientX - rect.left - d / 2) + 'px';
+        ripple.style.top = (e.clientY - rect.top - d / 2) + 'px';
+        btn.appendChild(ripple);
+        setTimeout(function () { ripple.remove(); }, 750);
+    });
+
+    /* ---------- 7. Tilt 3D kartu interaktif ---------- */
+
+    var finePointer = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
+    var tiltCards = Array.prototype.slice.call(document.querySelectorAll('.surface-card-interactive'));
+    if (tiltCards.length && !reducedMotion && finePointer && !('ontouchstart' in window)) {
+        tiltCards.forEach(function (card) {
+            var hovering = false;
+            card.addEventListener('mousemove', function (e) {
+                if (!hovering) { hovering = true; card.style.transition = 'transform 120ms ease-out'; }
+                var rect = card.getBoundingClientRect();
+                var px = (e.clientX - rect.left) / rect.width - 0.5;
+                var py = (e.clientY - rect.top) / rect.height - 0.5;
+                card.style.transform = 'perspective(900px) rotateY(' + (px * 7) + 'deg) rotateX(' + (-py * 7) + 'deg) translateY(-6px)';
+            });
+            card.addEventListener('mouseleave', function () {
+                if (!hovering) { return; }
+                hovering = false;
+                card.style.transition = 'transform .5s cubic-bezier(.22, 1, .36, 1)';
+                card.style.transform = '';
+                setTimeout(function () { card.style.transition = ''; }, 500);
+            });
+        });
     }
 })();
