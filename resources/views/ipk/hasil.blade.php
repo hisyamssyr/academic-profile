@@ -16,16 +16,16 @@
             </div>
         @else
             <div class="mt-7 grid gap-4 sm:grid-cols-3">
-                <article class="rounded-2xl border border-line bg-slate-50/70 p-5">
+                <article class="rounded-2xl border border-line bg-surface-strong/70 p-5">
                     <p class="text-sm font-semibold text-ink-soft">IP Semester 1</p>
                     <p class="mt-2 text-3xl font-bold tracking-tight text-ink">{{ number_format($ip1, 2) }}</p>
                 </article>
-                <article class="rounded-2xl border border-line bg-slate-50/70 p-5">
+                <article class="rounded-2xl border border-line bg-surface-strong/70 p-5">
                     <p class="text-sm font-semibold text-ink-soft">IP Semester 2</p>
                     <p class="mt-2 text-3xl font-bold tracking-tight text-ink">{{ number_format($ip2, 2) }}</p>
                 </article>
-                <article class="rounded-2xl bg-gradient-to-br from-ocean-deep to-teal-700 p-5 text-white shadow-card">
-                    <p class="text-sm font-semibold text-teal-100">Rata-rata IP</p>
+                <article class="rounded-2xl bg-gradient-to-br from-ocean-deep to-ocean p-5 text-white shadow-card">
+                    <p class="text-sm font-semibold text-ocean-soft">Rata-rata IP</p>
                     <p class="mt-2 text-3xl font-bold tracking-tight">{{ number_format($rataRata, 2) }}</p>
                 </article>
             </div>

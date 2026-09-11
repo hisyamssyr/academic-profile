@@ -11,13 +11,13 @@
 
 @section('content')
     <section class="surface-card overflow-hidden">
-        <div class="h-16 bg-gradient-to-r from-ocean-deep via-teal-700 to-ocean sm:h-20" aria-hidden="true"></div>
+        <div class="h-16 bg-gradient-to-r from-ocean-deep via-ocean to-ocean-deep-strong sm:h-20" aria-hidden="true"></div>
         <div class="px-5 pb-8 pt-7 sm:px-9 sm:pb-10 sm:pt-8">
             <div class="flex flex-wrap items-center justify-between gap-x-5 gap-y-4">
                 <div class="flex items-center gap-4 sm:gap-5">
-                    <img src="{{ asset('images/pict.jpeg') }}" alt="Foto {{ $mahasiswa['nama'] }}" class="size-24 rounded-2xl border-4 border-white object-cover shadow-card sm:size-28" loading="lazy">
+                    <img src="{{ asset('images/pict.jpeg') }}" alt="Foto {{ $mahasiswa['nama'] }}" class="size-24 rounded-2xl border-4 border-surface object-cover shadow-card sm:size-28" loading="lazy">
                     <div>
-                        <p class="font-mono text-xs font-semibold text-teal-700">{{ $mahasiswa['nrp'] }}</p>
+                        <p class="font-mono text-xs font-semibold text-ocean-soft">{{ $mahasiswa['nrp'] }}</p>
                         <h1 class="mt-1 text-2xl font-bold tracking-tight text-ink sm:text-3xl">{{ $mahasiswa['nama'] }}</h1>
                         <p class="mt-1 text-sm font-medium text-ink-soft">{{ $mahasiswa['prodi'] }}</p>
                     </div>
@@ -79,9 +79,9 @@
             @foreach ($mahasiswa['pengalaman'] as $index => $pengalaman)
                 <div class="grid gap-4 sm:grid-cols-[auto_1fr] sm:gap-6">
                     <div class="hidden sm:flex flex-col items-center pt-2" aria-hidden="true">
-                        <span class="size-3.5 rounded-full bg-teal-600 ring-4 ring-teal-100"></span>
+                        <span class="size-3.5 rounded-full bg-ocean ring-4 ring-ocean-strong"></span>
                         @if (! $loop->last)
-                            <span class="mt-2 w-px flex-1 bg-teal-100"></span>
+                            <span class="mt-2 w-px flex-1 bg-ocean-strong"></span>
                         @endif
                     </div>
                     <article class="surface-card relative p-5 sm:p-6">
@@ -90,12 +90,12 @@
                                 <h3 class="text-lg font-bold tracking-tight text-ink sm:text-xl">{{ $pengalaman['peran'] }}</h3>
                                 <p class="mt-0.5 text-sm font-medium text-ink-soft">{{ $pengalaman['organisasi'] }}</p>
                             </div>
-                            <span class="{{ $index % 2 === 0 ? 'bg-teal-50 text-teal-700' : 'bg-slate-100 text-slate-600' }} shrink-0 rounded-full px-3 py-1 text-xs font-semibold">{{ $pengalaman['periode'] }}</span>
+                            <span class="{{ $index % 2 === 0 ? 'bg-ocean/10 text-ocean-soft' : 'bg-surface-strong/70 text-ink-soft' }} shrink-0 rounded-full px-3 py-1 text-xs font-semibold">{{ $pengalaman['periode'] }}</span>
                         </div>
                         <ul class="mt-4 space-y-2 text-sm leading-6 text-ink-soft">
                             @foreach ($pengalaman['poin'] as $poin)
                                 <li class="flex gap-2.5">
-                                    <svg class="mt-1 size-4 shrink-0 text-teal-600" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                                    <svg class="mt-1 size-4 shrink-0 text-ocean" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
                                     <span>{{ $poin }}</span>
                                 </li>
                             @endforeach
