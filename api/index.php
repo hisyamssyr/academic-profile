@@ -44,8 +44,9 @@ if (file_exists($sqlitePath)) {
 // Setup Environment Variables for Vercel Serverless
 $envVars = [
     'APP_ENV' => 'production',
-    'APP_DEBUG' => 'true',
+    'APP_DEBUG' => 'false',
     'APP_KEY' => 'base64:LkTqyCKYcYonUHhfoy/qxQKe072nWgAFnTm86QxviK4=',
+    'APP_MAINTENANCE_DRIVER' => 'file',
     'DB_CONNECTION' => 'sqlite',
     'DB_DATABASE' => $dbPath,
     'VIEW_COMPILED_PATH' => '/tmp/framework/views',

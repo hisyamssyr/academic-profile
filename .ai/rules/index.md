@@ -4,5 +4,6 @@ Before planning or editing, find the row whose globs match the file's path and r
 
 | Applies to | Rule file |
 | --- | --- |
+| api/index.php | .ai/rules/api.md |
 | Dockerfile | .ai/rules/dockerfile.md |
 | resources/views/** | .ai/rules/views.md |
