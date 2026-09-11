@@ -35,7 +35,7 @@
                     </div>
                     <div data-reveal="1">
                         <dt class="text-xs font-semibold uppercase tracking-wide text-ink-faint">IPK</dt>
-                        <dd class="mt-1 text-sm font-bold text-ink"><span data-count-up="3.49" data-count-decimals="2">3.49</span> <span class="font-medium text-ink-soft">/ 4.00</span></dd>
+                        <dd class="mt-1 text-sm font-bold text-ink"><span data-count-up="3.51" data-count-decimals="2">3.49</span> <span class="font-medium text-ink-soft">/ 4.00</span></dd>
                     </div>
                     <div data-reveal="2">
                         <dt class="text-xs font-semibold uppercase tracking-wide text-ink-faint">Minat</dt>

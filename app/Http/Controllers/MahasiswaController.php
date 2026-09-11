@@ -14,7 +14,7 @@ class MahasiswaController extends Controller
                 'nrp' => '5025241130',
                 'prodi' => 'S1 Teknik Informatika, Institut Teknologi Sepuluh Nopember',
                 'angkatan' => '2024 (masuk Agustus 2024, expected lulus Agustus 2028)',
-                'ipk' => '3.49 / 4.00',
+                'ipk' => '3.51 / 4.00',
                 'minat' => 'Data Analysis & Machine Learning',
                 'kontak' => 'hisyamsyafa2@gmail.com | +6285227763718',
                 'instagram' => 'https://instagram.com/hisyamssyr',
