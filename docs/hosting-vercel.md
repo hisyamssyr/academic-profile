@@ -19,7 +19,7 @@ Panduan ini khusus untuk **academic-profile** (Laravel tanpa database) menggunak
 - Vercel mendeteksi `vercel.json`, memakai runtime **`vercel-php@0.9.0`** yang menyediakan **PHP 8.5.x** (kompatibel dengan Laravel 13 yang butuh `^8.3`).
 - **Build framework di-skip** (`"buildCommand": ""` di `vercel.json`) — Vercel TIDAK menjalankan `npm run build`/node. CSS/JS Vite dilayani dari **`public/build` yang ter-commit**; maka setiap ubah UI, jalankan `npm run build` lokal dulu lalu commit hasilnya.
 - Saat membangun function, runtime **otomatis menjalankan `composer install`** (`--no-dev --no-interaction --no-scripts --ignore-platform-reqs`) karena `composer.json` ada di root — lalu `vendor/` hasil install ikut ter-package ke lambda (dibutuhkan `api/index.php`). **Jangan** menambah `buildCommand` berisi `composer`: di build-env framework, `composer` tidak terpasang sehingga build gagal `command not found`.
-- Semua request (`/(.*)`) diteruskan ke `api/index.php`; file statis di `public/build/` dilayani via route `/build/(.*)`.
+- Semua request diteruskan ke `api/index.php` via route tunggal `/(.*)`. **File statis** di `public/build/`, `public/images/`, dan `public/favicon.ico` dilayani **langsung oleh fungsi** `api/index.php` — sebelum Laravel bootstrap — berdasarkan `REQUEST_URI`. Jika file ditemukan dan ekstensinya di-whitelist (`.css`, `.js`, `.woff2`, `.jpeg`, `.svg`, dll.), konten langsung dikirim dengan `Content-Type` yang benar dan caching yang agresif (`immutable` untuk `build/`). Jika tidak, request diteruskan ke Laravel. Konsep ini memastikan aset Vite tetap tersaji meskipun routing statis Vercel tidak aktif atau ambigu.
 - Nilai env (`APP_ENV`, `APP_DEBUG`, `APP_KEY`, dll.) sudah di-inline di `vercel.json` — **tidak perlu `.env`**.
 
 ---
@@ -111,10 +111,12 @@ CLI membaca `vercel.json` yang sama; hasilnya identik dengan deploy dari GitHub,
 | Build gagal "composer: command not found" | `buildCommand` berisi `composer` di `vercel.json`. Hapus `buildCommand` — composer dijalankan otomatis oleh runtime `vercel-php`, bukan build-env. |
 | Build "Running npm run build" → "vite: command not found" | `buildCommand` tidak dikosongkan sehingga Vercel menjalankan default `npm run build` tanpa node_modules. Pastikan `"buildCommand": ""` di `vercel.json` (build di-skip; CSS/JS diambil dari `public/build` yang ter-commit). |
 | `500` "Too few arguments ... Manager::createDriver()" | `APP_MAINTENANCE_DRIVER` ada di env Vercel bernilai **kosong** → driver maintenance `''` → rekursi di `Manager`. Hapus variabel kosong itu di dashboard (Settings → Environment Variables), atau biarkan handler di `api/index.php` (sudah memaksa `file`). |
-| Situs tampil tapi **tanpa animasi/style baru** | `public/build` belum naik. Jalankan `npm run build`, commit `public/build`, push → redeploy. |
+| Situs tampil tapi **tanpa animasi/style baru** | `public/build` belum ter-commit. Jalankan `npm run build` lokal, commit `public/build`, push → redeploy. Fungsi `api/index.php` akan melayani file statis dari `public/build/` secara otomatis jika file ada. |
 | Build Vercel gagal | Bisa gagal di `composer install` (jaringan/kuota): **Deployments → Redeploy** ulang, atau cek versi PHP runtime di Logs. |
 | Muncul `ERR_REQUIRE_ESM` / error Node di build | Pastikan `installCommand` di `vercel.json` tetap `""` (skip npm) — Vercel tidak perlu node untuk proyek ini. |
-| Route / 404 untuk path valid | Pastikan routes di `vercel.json` tidak dihapus: `/build/(.*)` → `/public/build/$1`, lalu `/(.*)` → `/api/index.php`. |
+| Route / 404 untuk path valid | Pastikan `api/index.php` sudah ada di repo — route `/(.*)` → `/api/index.php` harus tetap ada di `vercel.json`. File statis di `/build/`, `/images/` dilayani oleh fungsi, bukan oleh route terpisah. |
+| Halaman "This deployment could not be found. DEPLOYMENT_NOT_FOUND" | Alias/domain menunjuk deployment yang sudah dihapus/tidak aktif. Cek dashboard: deployment terbaru harus **Ready** dan menjadi **Production**. Kalau build baru masih berjalan, tunggu selesai; kalau Deployment terhapus, buat deployment baru (push ulang / **Redeploy**). |
+| Halaman muncul tapi CSS/gambar hilang (hanya teks + ikon gambar rusak) | Aset statis di `/build/assets/*.css`, `.js`, dan `/images/*` tidak tersaji → biasanya karena `public/build` tidak ter-commit atau fungsi lama yang belum punya static-serving. Push perubahan `api/index.php` + `vercel.json` terbaru lalu redeploy. |
 | Exception PHP | Ambil dari dashboard **Logs** → copy stack trace; umumnya karena file di luar root tidak ter-upload (pastikan tidak ada `.vercelignore` aneh). |
 
 ---

@@ -41,6 +41,57 @@ if (file_exists($sqlitePath)) {
     }
 }
 
+// Serve static assets (Vite build output, images, favicon) directly before bootstrapping Laravel.
+// This is a fallback for environments that do not serve files from the public/ directory
+// automatically (e.g. Vercel Serverless Functions where static routing is ambiguous).
+$contentTypes = [
+    'css' => 'text/css; charset=utf-8',
+    'js' => 'application/javascript; charset=utf-8',
+    'mjs' => 'application/javascript; charset=utf-8',
+    'json' => 'application/json; charset=utf-8',
+    'map' => 'application/json',
+    'svg' => 'image/svg+xml',
+    'png' => 'image/png',
+    'jpg' => 'image/jpeg',
+    'jpeg' => 'image/jpeg',
+    'webp' => 'image/webp',
+    'gif' => 'image/gif',
+    'avif' => 'image/avif',
+    'ico' => 'image/x-icon',
+    'woff' => 'font/woff',
+    'woff2' => 'font/woff2',
+    'ttf' => 'font/ttf',
+    'otf' => 'font/otf',
+    'txt' => 'text/plain; charset=utf-8',
+    'xml' => 'application/xml; charset=utf-8',
+];
+
+$publicDir = realpath(__DIR__.'/../public');
+
+if ($publicDir !== false) {
+    $requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
+    $staticPath = $requestPath;
+    if (str_starts_with($staticPath, '/public/')) {
+        $staticPath = substr($staticPath, strlen('/public'));
+    }
+    $staticFile = realpath($publicDir.$staticPath);
+    $extension = $staticFile === false ? '' : strtolower(pathinfo($staticFile, PATHINFO_EXTENSION));
+
+    if ($staticFile !== false
+        && is_file($staticFile)
+        && str_starts_with($staticFile, $publicDir.DIRECTORY_SEPARATOR)
+        && isset($contentTypes[$extension])
+    ) {
+        header('Content-Type: '.$contentTypes[$extension]);
+        header('Cache-Control: '.(str_starts_with($requestPath, '/build/')
+            ? 'public, max-age=31536000, immutable'
+            : 'public, max-age=3600'));
+        header('X-Content-Type-Options: nosniff');
+        readfile($staticFile);
+        exit;
+    }
+}
+
 // Setup Environment Variables for Vercel Serverless
 $envVars = [
     'APP_ENV' => 'production',
