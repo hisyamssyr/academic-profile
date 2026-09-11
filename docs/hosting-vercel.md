@@ -17,7 +17,8 @@ Panduan ini khusus untuk **academic-profile** (Laravel tanpa database) menggunak
 ## Cara kerja
 
 - Vercel mendeteksi `vercel.json`, memakai runtime **`vercel-php@0.9.0`** yang menyediakan **PHP 8.5.x** (kompatibel dengan Laravel 13 yang butuh `^8.3`).
-- Saat membangun function, runtime **otomatis menjalankan `composer install`** (`--no-dev --no-interaction --no-scripts --ignore-platform-reqs`) karena `composer.json` ada di root — lalu `vendor/` hasil install ikut ter-package ke lambda (dibutuhkan `api/index.php`). **Jangan** menambah `buildCommand` composer: di build-env framework, `composer` tidak terpasang sehingga build gagal `command not found`.
+- **Build framework di-skip** (`"buildCommand": ""` di `vercel.json`) — Vercel TIDAK menjalankan `npm run build`/node. CSS/JS Vite dilayani dari **`public/build` yang ter-commit**; maka setiap ubah UI, jalankan `npm run build` lokal dulu lalu commit hasilnya.
+- Saat membangun function, runtime **otomatis menjalankan `composer install`** (`--no-dev --no-interaction --no-scripts --ignore-platform-reqs`) karena `composer.json` ada di root — lalu `vendor/` hasil install ikut ter-package ke lambda (dibutuhkan `api/index.php`). **Jangan** menambah `buildCommand` berisi `composer`: di build-env framework, `composer` tidak terpasang sehingga build gagal `command not found`.
 - Semua request (`/(.*)`) diteruskan ke `api/index.php`; file statis di `public/build/` dilayani via route `/build/(.*)`.
 - Nilai env (`APP_ENV`, `APP_DEBUG`, `APP_KEY`, dll.) sudah di-inline di `vercel.json` — **tidak perlu `.env`**.
 
@@ -42,7 +43,7 @@ git push
 3. Halaman **Configure Project**:
    - **Framework Preset** → pilih **Other** (bukan Laravel; Vercel tidak punya preset PHP built-in).
    - **Root Directory** → biarkan kosong (`/`).
-   - **Build & Development Settings** → biarkan **semua auto** (isi sudah dibaca dari `vercel.json`: install command dikosongkan, outputDirectory `public`). **Jangan** menimpa manual.
+   - **Build & Development Settings** → biarkan **semua auto** (isi sudah dibaca dari `vercel.json`: install & build command dikosongkan sehingga Vercel tidak menjalankan `npm run build`, outputDirectory `public`). **Jangan** menimpa manual.
    - **Environment Variables** → tidak perlu diisi apa pun (sudah di `vercel.json`). Kalau mau, variabel yang diisi manual di sini menimpa yang di `vercel.json`.
 4. Klik **Deploy**.
 
@@ -108,6 +109,7 @@ CLI membaca `vercel.json` yang sama; hasilnya identik dengan deploy dari GitHub,
 | --- | --- |
 | Halaman `500` / "vendor/autoload.php not found" | `composer install` gagal / vendor tidak ter-package. Cek tab **Deployments → (deployment) → Logs** — pastikan baris `🐘 Installing Composer dependencies [START] ... [DONE]` ada dan `composer.lock` ter-commit. |
 | Build gagal "composer: command not found" | `buildCommand` berisi `composer` di `vercel.json`. Hapus `buildCommand` — composer dijalankan otomatis oleh runtime `vercel-php`, bukan build-env. |
+| Build "Running npm run build" → "vite: command not found" | `buildCommand` tidak dikosongkan sehingga Vercel menjalankan default `npm run build` tanpa node_modules. Pastikan `"buildCommand": ""` di `vercel.json` (build di-skip; CSS/JS diambil dari `public/build` yang ter-commit). |
 | Situs tampil tapi **tanpa animasi/style baru** | `public/build` belum naik. Jalankan `npm run build`, commit `public/build`, push → redeploy. |
 | Build Vercel gagal | Bisa gagal di `composer install` (jaringan/kuota): **Deployments → Redeploy** ulang, atau cek versi PHP runtime di Logs. |
 | Muncul `ERR_REQUIRE_ESM` / error Node di build | Pastikan `installCommand` di `vercel.json` tetap `""` (skip npm) — Vercel tidak perlu node untuk proyek ini. |
