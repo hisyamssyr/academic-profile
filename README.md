@@ -1,58 +1,138 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Profile Akademis — Laravel Local Routing Sandbox
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+> **Tugas Mandiri — Pemrograman Berbasis Kerangka Kerja (PBKK), Pertemuan 2: Instalasi & Routing**
 
-## About Laravel
+Website **profile akademis statis** yang dibangun dengan **Laravel local routing sandbox** (tanpa database — seluruh data di-hardcode di controller). Fokus utama tugas ini adalah penguasaan **routing** Laravel: *required parameter*, *optional parameter + fallback*, *named routes*, *regex constraint*, hingga *route fallback* (custom 404).
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Identitas Mahasiswa
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Nama: Hisyam Syafa Raditya**
+- **NRP: 5025241130**
+- **Prodi: S1 Teknik Informatika — Departemen Teknik Informatika, Institut Teknologi Sepuluh Nopember**
+- **Angkatan: 2024** (masuk Agustus 2024, expected lulus Agustus 2028)
 
-## Learning Laravel
+Data diri tersebut ditampilkan langsung di dalam aplikasi (halaman Home dan halaman Detail Profil `/mahasiswa/5025241130`).
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Deskripsi Proyek
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+Aplikasi ini adalah **portofolio/persona akademis** milik Hisyam Syafa Raditya yang dirancang sebagai *landing page* modern dan responsif, memuat:
 
-## Agentic Development
+1. **Home** — Kata sambutan bernuansa ITS beserta *sneak peek* profil dan ide *Final Project*.
+2. **Detail Profil** — Data akademis lengkap (NRP, IPK, minat), pengalaman organisasi berbentuk *timeline*, skill badges, dan tombol konek sosial media.
+3. **DataAgent.ai** — Halaman konsep platform *Agentic AI* untuk analitik data end-to-end, dengan 3 agent khusus yang dapat diakses per-agen.
+4. **Kalkulator IPK** — Kalkulator rata-rata dua nilai IP dengan validasi skala maksimal 4.00.
+5. **Custom 404** — Halaman fallback untuk URL yang tidak cocok dengan route mana pun.
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+---
+
+## Tech Stack
+
+### Backend
+| Teknologi | Keterangan |
+|---|---|
+| **PHP 8.5** | Bahasa pemrograman utama |
+| **Laravel 13** (`laravel/framework ^13.17`) | Framework backend, routing, dan Blade templating |
+| **Laravel Tinker** | REPL untuk debugging dalam konteks aplikasi |
+| **PHPUnit 12** | Testing framework |
+| **Laravel Pint** | Code formatter (PSR-style) |
+
+### Frontend & Build Tools
+| Teknologi | Keterangan |
+|---|---|
+| **Blade** | Templating engine bawaan Laravel |
+| **Tailwind CSS 4** | Utility-first CSS (via `@tailwindcss/vite`) |
+| **Vite 8** | Build tool & dev server untuk asset frontend |
+| **JavaScript (vanilla)** | Interaktivitas ringan (animasi scroll-reveal, count-up, hamburger menu) |
+
+### Lainnya
+| Teknologi | Keterangan |
+|---|---|
+| **Laravel Boost 2.8** | MCP server + skill untuk pengembangan berbasis AI agent |
+| **SQLite** | Terpasang namun tidak digunakan (tugas ini tanpa database) |
+
+---
+
+## Struktur Route
+
+Semua route didefinisikan di `routes/web.php` dan **wajib memiliki nama** (`->name()`):
+
+| Method | URI | Nama | Keterangan |
+|---|---|---|---|
+| `GET` | `/` | `home` | Landing page profil akademis |
+| `GET` | `/mahasiswa/{nrp}` | `mahasiswa.detail` | Detail profil; `{nrp}` wajib 10 digit (`where('nrp', '[0-9]{10}')`) |
+| `GET` | `/agent/{tema?}` | `agent.show` | Overview DataAgent.ai atau detail agent (`sql-builder`, `eda-cleaner`, `viz-reporter`) |
+| `GET` | `/hitung-ipk` | `ipk.form` | Form input IP sebelum kalkulasi |
+| `GET` | `/hitung-ipk/{ip1}/{ip2}` | `ipk.hitung` | Kalkulator rata-rata 2 IP; parameter desimal tervalidasi |
+| *(fallback)* | — | `fallback` | Custom 404 untuk URL yang tidak cocok |
+
+### Semua halaman memakai `route()` — tidak ada hardcoded path.
+
+---
+
+## URL untuk Demo ke Dosen
+
+### Route yang Benar
+- **Home** → `GET /`
+- **Profil valid** → `GET /mahasiswa/5025241130`
+- **Agent overview** → `GET /agent`
+- **Agent detail (per tema)** → `GET /agent/sql-builder`, `GET /agent/eda-cleaner`, `GET /agent/viz-reporter`
+- **Kalkulator** → `GET /hitung-ipk/3.5/3.5`
+- **Agent tema tidak dikenali** → `GET /agent/acak`
+
+### Route yang Memicu Error/404 (untuk membuktikan constraint)
+- **NRP bukan 10 digit** → `GET /mahasiswa/123` (regex `[0-9]{10}` ditolak → fallback 404)
+- **NRP 10 digit tapi tidak terdaftar** → `GET /mahasiswa/0000000000` (view "Mahasiswa tidak ditemukan")
+- **IP > 4.00** → `GET /hitung-ipk/5/3` (pesan "Nilai IP tidak valid, skala maksimal 4.00")
+- **URL acak** → `GET /halaman-tidak-ada` (custom 404)
+
+---
+
+## Menjalankan Proyek Secara Lokal
 
 ```bash
-composer require laravel/boost --dev
+# 1. Instal dependency PHP
+composer install
 
-php artisan boost:install
+# 2. Setup environment
+cp .env.example .env
+php artisan key:generate
+
+# 3. Instal dependency frontend & build asset
+npm install
+npm run build
+
+# 4. Jalankan development server
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Tampilan dapat diakses di `http://localhost:8000`. Untuk development frontend real-time, gunakan `npm run dev`.
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Struktur Direktori Utama
 
-## Code of Conduct
+```
+routes/web.php                          -> definisi seluruh route + constraint
+app/Http/Controllers/
+├── HomeController.php                   -> landing page
+├── MahasiswaController.php              -> detail profil mahasiswa (data hardcode)
+├── AgentController.php                  -> overview/detail DataAgent.ai
+└── IpkController.php                    -> kalkulator IPK
+resources/views/
+├── layouts/app.blade.php                -> navbar + footer + Tailwind
+├── home.blade.php
+├── mahasiswa/{detail,notfound}.blade.php
+├── agent/{show,unknown}.blade.php
+├── ipk/{form,hasil}.blade.php
+└── errors/fallback.blade.php            -> custom 404
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## Lisensi
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Proyek ini dibuat untuk keperluan tugas mata kuliah **PBKK** — Departemen Teknik Informatika, Institut Teknologi Sepuluh Nopember.
