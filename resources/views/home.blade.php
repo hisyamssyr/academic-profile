@@ -28,7 +28,7 @@
                         </span>
                     </a>
                     <a href="{{ route('agent.show') }}" class="button-secondary group">
-                        Lihat DataAgent.ai
+                        Lihat platform QA Agentic
                         <span aria-hidden="true" class="grid size-6 place-items-center rounded-full border border-ocean-soft/40 bg-ocean/15 text-ocean-soft transition-all duration-300 group-hover:translate-x-0.5 group-hover:border-ocean group-hover:bg-ocean group-hover:text-white">
                             <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
                         </span>
@@ -95,8 +95,8 @@
                 <svg aria-hidden="true" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="2.5" /><path d="M12 8V5" /><circle cx="12" cy="4" r="1" /><path d="M8.5 13h.01M12 13h.01M15.5 13h.01" /><path d="M9 16.5c1 .8 2.5 1.2 3 1.2s2-.4 3-1.2" /></svg>
             </span>
             <p class="mt-5 text-xs font-semibold uppercase tracking-[0.16em] text-ocean-soft">Konsep proyek akhir</p>
-            <h2 class="mt-2 text-2xl font-bold tracking-tight">DataAgent<span class="text-ocean-soft">.ai</span></h2>
-            <p class="mt-2 max-w-md text-sm leading-6 text-ink-soft">Autonomous AI Agent Suite untuk analitik data end-to-end.</p>
+            <h2 class="mt-2 text-2xl font-bold tracking-tight">Sistem QA<span class="text-ocean-soft"> Agentic</span></h2>
+            <p class="mt-2 max-w-md text-sm leading-6 text-ink-soft">Agent yang menguji, mendiagnosis, dan memperbaiki aplikasi web — dibuktikan dengan pull request terverifikasi.</p>
             <p class="mt-auto inline-flex items-center gap-2 pt-6 text-sm font-semibold text-ocean-soft">
                     Kenali para agent
                     <span aria-hidden="true" class="grid size-7 place-items-center rounded-full border border-ocean-soft/40 bg-white/10 text-ocean-soft transition-all duration-300 group-hover:translate-x-0.5 group-hover:border-ocean-soft group-hover:bg-ocean group-hover:text-white">

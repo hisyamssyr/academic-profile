@@ -9,30 +9,30 @@ class AgentController extends Controller
     public function show(?string $tema = null): View
     {
         $platform = [
-            'nama' => 'DataAgent.ai',
-            'tagline' => 'Autonomous AI Agent Suite for End-to-End Data Analytics',
-            'techStack' => 'Laravel 11/12 (Backend & Routing), Tailwind CSS (Frontend), Gemini API / OpenRouter (AI Engine), PostgreSQL / MySQL (Database)',
-            'latarBelakang' => 'Seorang Data Analyst sering menghabiskan 60-70% waktunya untuk pekerjaan berulang: data cleaning, penulisan query SQL dasar, serta pembuatan visualisasi dan ringkasan data. DataAgent.ai adalah platform Agentic AI berbasis web yang mengeksekusi alur kerja data analytics secara otomatis, membagi tugas analisis ke beberapa agen AI khusus.',
+            'nama' => 'Agentic AI-Based Web Application — Quality Assurance, Security Testing, and Automated Repair System',
+            'tagline' => 'Autonomous agent that tests, diagnoses, and repairs deployed web applications — then proves the fix with a verified pull request.',
+            'techStack' => 'Laravel + Livewire (orchestration), Qwen3 1.7B via llama.cpp (reasoning engine, CPU-only), Playwright + Headless Chromium (browser automation), OWASP ZAP (security scanning), GitHub App + GitHub Actions (repo integration, CI, PR), PostgreSQL + Queue (data & job orchestration)',
+            'latarBelakang' => 'Pengujian web modern menghadapi dua masalah sekaligus: DOM yang berantakan (div custom, canvas UI, tanpa label semantik) membuat automation tools biasa gagal, dan business-logic vulnerability seperti broken access control sering lolos dari scanner otomatis. Sistem ini menggabungkan agent browser dengan strategi fallback berlapis, security scanning berbasis reasoning AI, dan kemampuan menelusuri root cause langsung ke source code di GitHub — lalu mengusulkan perbaikan yang sudah diverifikasi lewat testing otomatis, bukan sekadar laporan bug.',
         ];
 
         $agents = [
-            'sql-builder' => [
-                'nama' => '@sql-builder',
-                'peran' => 'Database & Query Agent',
-                'fungsi' => 'Menerjemahkan instruksi bahasa alami menjadi kueri SQL yang teroptimasi (support PostgreSQL/MySQL).',
-                'output' => 'Kode SQL, deskripsi alur join/aggregation, saran indeks basis data.',
+            'qa-explorer' => [
+                'nama' => '@qa-explorer',
+                'peran' => 'Functional & Accessibility QA Agent',
+                'fungsi' => 'Menjelajahi aplikasi web memakai strategi 6-level fallback — mulai dari semantic accessibility tree, DOM heuristics, computed geometry/proximity, keyboard navigation, coordinate interaction, hingga (opsional) interpretasi visual — sehingga tetap bisa menguji form dan interaksi meski markup HTML-nya berantakan.',
+                'output' => 'Daftar temuan fungsional (error, broken flow) dan aksesibilitas (elemen tidak punya label/tidak keyboard-reachable), lengkap dengan bukti (DOM snapshot, network log, screenshot).',
             ],
-            'eda-cleaner' => [
-                'nama' => '@eda-cleaner',
-                'peran' => 'Data Cleaning & Exploration Agent',
-                'fungsi' => 'Menganalisis skema/struktur data (CSV/JSON/Tabel) untuk mendeteksi missing values, outliers, serta rekomendasi statistik preprocessing.',
-                'output' => 'Matriks kualitas data & draf fungsi pembersihan data.',
+            'security-scanner' => [
+                'nama' => '@security-scanner',
+                'peran' => 'Security Testing Agent',
+                'fungsi' => 'Menjalankan passive scan (lewat proxy OWASP ZAP) terhadap semua traffic untuk deteksi header/cookie tidak aman, lalu memakai beberapa akun uji berbeda peran untuk menguji broken access control dan IDOR/BOLA secara berbasis reasoning — kategori bug yang biasanya lolos dari scanner otomatis biasa. Active scan hanya aktif bila pengguna eksplisit mencentang otorisasi.',
+                'output' => 'Laporan temuan keamanan dengan tingkat keparahan (severity), bukti request/response, dan rekomendasi.',
             ],
-            'viz-reporter' => [
-                'nama' => '@viz-reporter',
-                'peran' => 'Data Visualization & Insight Agent',
-                'fungsi' => 'Membaca hasil analisis data untuk merangkum key business insights dan menggenerasi kode visualisasi (Chart.js/Plotly/Matplotlib/Seaborn).',
-                'output' => 'Executive summary & konfig chart visualisasi.',
+            'repair-engineer' => [
+                'nama' => '@repair-engineer',
+                'peran' => 'Auto-Repair Agent',
+                'fungsi' => 'Menelusuri root cause bug ke source code repo GitHub terkait (lewat pencarian deterministik: stack trace → file → caller → test terkait), menghasilkan patch beserta regression test, lalu memvalidasinya di environment sementara (ephemeral container) sebelum diajukan.',
+                'output' => 'Branch perbaikan + regression test + hasil CI + Draft Pull Request yang menunggu review manusia (tidak pernah auto-merge ke main).',
             ],
         ];
 

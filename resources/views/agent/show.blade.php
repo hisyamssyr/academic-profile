@@ -50,7 +50,7 @@
 
         <section class="mt-12 sm:mt-16">
             <p class="eyebrow">Tim spesialis</p>
-            <h2 class="section-title">Agent untuk tiap tahap analisis</h2>
+            <h2 class="section-title">Agent untuk tiap tahap penjaminan kualitas</h2>
             <div class="mt-7 grid gap-5 md:grid-cols-3">
                 @foreach ($agents as $key => $item)
                     <a href="{{ route('agent.show', ['tema' => $key]) }}" class="surface-card-interactive group flex min-h-64 flex-col p-6">
